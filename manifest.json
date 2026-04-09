@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Overlord", 
-  "short_name": "OVL",
-  "description": "Aplikasi notes sederhana.",
+  "name": "PWA Template Responsif",
+  "short_name": "PWA Demo",
+  "description": "Aplikasi PWA responsif untuk demonstrasi template dasar Progressive Web App dengan dukungan offline dan installable.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -22,26 +22,26 @@
       "type": "image/png"
     }
   ],
-  "screenshots": [ 
+  "screenshots": [
     {
       "src": "icons/screenshot1.png",
       "sizes": "1080x1920",
       "type": "image/png"
     },
     {
-      "src": "icons/screenshot2.png", 
+      "src": "icons/screenshot2.png",
       "sizes": "1080x1920",
       "type": "image/png"
     }
   ],
   "shortcuts": [
     {
-      "name": "Buka Beranda", 
+      "name": "Buka Beranda",
       "short_name": "Home",
       "url": "./index.html",
       "icons": [
         {
-          "src": "icons/icon-192x192-A.png", 
+          "src": "icons/icon-192x192-A.png",
           "sizes": "192x192"
         }
       ]
