@@ -3582,6 +3582,10 @@ schedFilter = new Date().toDateString();
 // Auto-init semua render
 renderDashboard();
 updateTaskBadge();
+   <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js')
+}
 </script>
 </script>
 </body>
