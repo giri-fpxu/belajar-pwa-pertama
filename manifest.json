@@ -6,6 +6,7 @@
   "start_url": "/Personal-Assistant/",
   "scope": "/Personal-Assistant/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#0e0e0e",
   "theme_color": "#4B6EFF",
   "orientation": "portrait",
@@ -43,6 +44,34 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Home Second Brain"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Home",
+      "short_name": "Home",
+      "description": "Buka halaman utama",
+      "url": "/Personal-Assistant/#home",
+      "icons": [
+        {
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Tambah Task",
+      "short_name": "Task",
+      "description": "Langsung tambah tugas",
+      "url": "/Personal-Assistant/#tasks",
+      "icons": [
+        {
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
