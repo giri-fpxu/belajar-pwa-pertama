@@ -130,13 +130,18 @@
 
   "iarc_rating_id": "e7b6c4f1-1234-5678-aaaa-bbbbccccdddd",
 
+  "note_taking": {
+    "new_note_url": "/Personal-Assistant/#notes"
+  },
+
   "widgets": [
     {
       "name": "Quick Add",
       "short_name": "Add",
       "description": "Tambah task cepat",
-      "src": "/Personal-Assistant/",
-      "sizes": "300x300"
+      "src": "/Personal-Assistant/#tasks",
+      "sizes": "300x300",
+      "type": "application/widget"
     }
   ],
 
