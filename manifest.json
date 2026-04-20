@@ -13,6 +13,7 @@
   "lang": "id",
   "dir": "ltr",
   "categories": ["productivity", "utilities"],
+
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -37,6 +38,7 @@
       "purpose": "maskable"
     }
   ],
+
   "screenshots": [
     {
       "src": "icons/screenshot1.png",
@@ -46,11 +48,11 @@
       "label": "Home Second Brain"
     }
   ],
+
   "shortcuts": [
     {
       "name": "Home",
       "short_name": "Home",
-      "description": "Buka halaman utama",
       "url": "/Personal-Assistant/#home",
       "icons": [
         {
@@ -63,7 +65,6 @@
     {
       "name": "Tambah Task",
       "short_name": "Task",
-      "description": "Langsung tambah tugas",
       "url": "/Personal-Assistant/#tasks",
       "icons": [
         {
@@ -73,5 +74,7 @@
         }
       ]
     }
-  ]
+  ],
+
+  "prefer_related_applications": false
 }
