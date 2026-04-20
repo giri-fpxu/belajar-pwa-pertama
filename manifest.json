@@ -10,6 +10,8 @@
   "theme_color": "#4B6EFF",
   "orientation": "portrait",
   "lang": "id",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities"],
   "icons": [
     {
       "src": "icons/icon-192x192.png",
