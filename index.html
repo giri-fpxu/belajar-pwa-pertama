@@ -2237,6 +2237,33 @@ if ('serviceWorker' in navigator) {
 
 </script>
 
+<script>
+function updateThemeColor() {
+  const root = document.documentElement;
+  const styles = getComputedStyle(root);
+  const brand = styles.getPropertyValue('--brand').trim();
+
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = "theme-color";
+    document.head.appendChild(meta);
+  }
+
+  meta.setAttribute("content", brand);
+}
+
+// jalan pertama
+updateThemeColor();
+
+// auto update kalo theme berubah
+const observer = new MutationObserver(updateThemeColor);
+observer.observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ["data-theme", "data-color"]
+});
+</script>
+
 <!-- ══════════════════════════════════════
      PWA INSTALL BANNER
      Muncul otomatis jika app belum diinstall
