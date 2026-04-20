@@ -3,97 +3,160 @@
    ✏️ Ubah CACHE_NAME setiap update besar agar cache fresh
 ════════════════════════════════════════════════════ */
 
-// ✏️ Nama cache — increment versi saat update (misal: v2, v3, dst)
 const CACHE_NAME = 'second-brain-v1';
 
-// ✏️ Daftar file yang di-cache saat install
-// Tambahkan file baru yang penting di sini
-const STATIC_FILES = [
+/* ── File lokal yang di-pre-cache saat install ──
+   ✏️ Jangan masukkan URL eksternal (font, CDN) di sini
+   Font & resource eksternal di-cache saat pertama kali diakses */
+const PRECACHE_FILES = [
   './',
   './index.html',
   './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png',
 ];
 
-/* ── INSTALL: cache file statis ── */
+/* ════════════════════════════════════════════════════
+   INSTALL — pre-cache file lokal
+   Pakai Promise.allSettled supaya satu file gagal
+   tidak membatalkan seluruh install
+════════════════════════════════════════════════════ */
 self.addEventListener('install', event => {
-  console.log('[SW] Install — cache:', CACHE_NAME);
-  // skipWaiting agar service worker langsung aktif tanpa reload manual
-  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(STATIC_FILES).catch(err => {
-        console.warn('[SW] Sebagian file gagal di-cache:', err);
-      });
-    })
+    caches.open(CACHE_NAME)
+      .then(cache =>
+        Promise.allSettled(
+          PRECACHE_FILES.map(url =>
+            cache.add(url).catch(err =>
+              console.warn('[SW] Gagal cache:', url, err)
+            )
+          )
+        )
+      )
+      .then(() => self.skipWaiting())
   );
 });
 
-/* ── ACTIVATE: hapus cache lama ── */
+/* ════════════════════════════════════════════════════
+   ACTIVATE — hapus semua cache versi lama
+════════════════════════════════════════════════════ */
 self.addEventListener('activate', event => {
-  console.log('[SW] Aktif — hapus cache lama');
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => {
-            console.log('[SW] Hapus cache lama:', key);
-            return caches.delete(key);
-          })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys =>
+        Promise.all(
+          keys
+            .filter(key => key !== CACHE_NAME)
+            .map(key => caches.delete(key))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-/* ── FETCH: strategi cache-first untuk asset statis,
-           network-first untuk request dinamis ── */
+/* ════════════════════════════════════════════════════
+   FETCH — strategi berdasarkan jenis request
+════════════════════════════════════════════════════ */
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
+  const req = event.request;
+  const url = new URL(req.url);
 
-  // Abaikan non-GET dan chrome-extension
-  if (event.request.method !== 'GET') return;
-  if (url.protocol.startsWith('chrome-extension')) return;
+  /* Abaikan non-GET */
+  if (req.method !== 'GET') return;
 
-  // ✏️ URL yang tidak perlu di-cache (tambahkan di sini jika perlu)
-  const noCachePatterns = [
-    'google-analytics.com',
-    'analytics',
-    'firebase',
-  ];
-  if (noCachePatterns.some(p => url.href.includes(p))) return;
+  /* Abaikan chrome-extension dan protokol non-http */
+  if (!url.protocol.startsWith('http')) return;
 
-  // Strategi: Cache-First untuk file lokal & Google Fonts
-  if (url.origin === self.location.origin || url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+  /* Abaikan analytics dan firebase */
+  const skipList = ['google-analytics.com', 'analytics', 'firebase', 'hotjar'];
+  if (skipList.some(p => url.href.includes(p))) return;
+
+  /* ── NAVIGATION REQUEST (buka halaman) ──
+     Strategi: Network-first, fallback ke index.html
+     Supaya selalu dapat versi terbaru, tapi tetap
+     bisa buka app waktu offline */
+  if (req.mode === 'navigate') {
     event.respondWith(
-      caches.match(event.request).then(cached => {
-        if (cached) return cached;
-        // Tidak ada di cache → fetch dari network lalu simpan
-        return fetch(event.request).then(response => {
-          if (!response || response.status !== 200) return response;
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          return response;
-        }).catch(() => {
-          // Offline fallback — kembalikan index.html untuk navigation request
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
+      fetch(req)
+        .then(res => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(c => c.put(req, clone));
           }
-        });
+          return res;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  /* ── ASSET LOKAL (JS, CSS, gambar, icon) ──
+     Strategi: Cache-first, update cache di background */
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(req).then(cached => {
+        const fetchPromise = fetch(req)
+          .then(res => {
+            if (res && res.status === 200 && res.type !== 'opaque') {
+              const clone = res.clone();
+              caches.open(CACHE_NAME).then(c => c.put(req, clone));
+            }
+            return res;
+          })
+          .catch(() => null);
+
+        return cached || fetchPromise;
       })
     );
     return;
   }
 
-  // Strategi: Network-First untuk resource eksternal lainnya
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        if (!response || response.status !== 200) return response;
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        return response;
+  /* ── GOOGLE FONTS ──
+     Strategi: Cache-first */
+  if (
+    url.hostname === 'fonts.googleapis.com' ||
+    url.hostname === 'fonts.gstatic.com'
+  ) {
+    event.respondWith(
+      caches.match(req).then(cached => {
+        if (cached) return cached;
+        return fetch(req).then(res => {
+          if (res && res.status === 200 && res.type !== 'opaque') {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(c => c.put(req, clone));
+          }
+          return res;
+        }).catch(() => null);
       })
-      .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  /* ── RESOURCE EKSTERNAL LAINNYA ──
+     Strategi: Network-first dengan timeout 4 detik */
+  event.respondWith(
+    Promise.race([
+      fetch(req).then(res => {
+        if (res && res.status === 200 && res.type !== 'opaque') {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, clone));
+        }
+        return res;
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 4000)
+      ),
+    ]).catch(() => caches.match(req))
   );
+});
+
+/* ════════════════════════════════════════════════════
+   MESSAGE — trigger skip waiting dari halaman
+   Panggil dari index.html:
+   navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' })
+════════════════════════════════════════════════════ */
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
