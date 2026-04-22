@@ -27,6 +27,7 @@
     }
   },
 
+
   "background_color": "#0e0e0e",
   "theme_color": "#4B6EFF",
 
@@ -90,6 +91,18 @@
           "type": "image/png"
         }
       ]
+    },
+    {
+      "name": "Tambah Task",
+      "short_name": "Task",
+      "url": "/Personal-Assistant/#tasks",
+      "icons": [
+        {
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
 
@@ -122,6 +135,18 @@
       "url": "/Personal-Assistant/?url=%s"
     }
   ],
+
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://giri-fpxu.github.io/Personal-Assistant/",
+      "id": "/Personal-Assistant/"
+    }
+  ],
+
+  "prefer_related_applications": false,
+
+  "iarc_rating_id": "e7b6c4f1-1234-5678-aaaa-bbbbccccdddd",
 
   "note_taking": {
     "new_note_url": "/Personal-Assistant/#notes"
