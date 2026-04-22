@@ -167,7 +167,8 @@
     "ms_ac_template": "/Personal-Assistant/widgets/template.json",
     "data": "/Personal-Assistant/widgets/data.json",
 
-    "type": "application/json",
+    "type": "application/widget",
+    "display": "standalone",
 
     "update": 3600,
 
