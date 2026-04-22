@@ -9,11 +9,12 @@
 
   "display": "standalone",
   "display_override": [
-    "tabbed",
-    "window-controls-overlay",
-    "standalone",
-    "minimal-ui"
-  ],
+  "window-controls-overlay",
+  "tabbed",
+  "standalone",
+  "minimal-ui",
+  "fullscreen"
+],
 
   "tab_strip": {
     "home_tab": {
@@ -189,9 +190,13 @@
   },
 
   "scope_extensions": [
-    {
-      "origin": "https://giri-fpxu.github.io",
-      "scope": "/Personal-Assistant/"
-    }
-  ]
+  {
+    "origin": "https://giri-fpxu.github.io"
+  },
+  {
+    "origin": "https://giri-fpxu.github.io",
+    "scope": "/Personal-Assistant/"
+  }
+]
 }
+  
