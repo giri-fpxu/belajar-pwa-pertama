@@ -194,38 +194,11 @@ async function renderWidget(widget) {
   await self.widgets.updateByTag(widget.definition.tag, {
     template,
     data
-    
   });
 }
 });
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const reg = await navigator.serviceWorker.register('/Personal-Assistant/service-worker.js');
 
-      console.log('[SW] Registered:', reg.scope);
+self.addEventListener("widgetinstall", event => {
+  event.waitUntil(renderWidget(event.widget));
+});
 
-      // 🔥 tunggu SW ready
-      const ready = await navigator.serviceWorker.ready;
-
-      // 🔥 background sync
-      try {
-        await ready.sync.register('sync-data');
-      } catch (e) {
-        console.log('sync gagal', e);
-      }
-
-      // 🔥 periodic sync
-      try {
-        await ready.periodicSync.register('update-data', {
-          minInterval: 24 * 60 * 60 * 1000
-        });
-      } catch (e) {
-        console.log('periodic gagal', e);
-      }
-
-    } catch (err) {
-      console.error('[SW] Registration failed:', err);
-    }
-  });
-}
