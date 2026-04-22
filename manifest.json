@@ -153,15 +153,34 @@
   },
 
   "widgets": [
-    {
-      "name": "Quick Add",
-      "short_name": "Add",
-      "description": "Tambah task cepat",
-      "src": "/Personal-Assistant/#tasks",
-      "sizes": "300x300",
-      "type": "application/widget"
-    }
-  ],
+  {
+    "name": "Quick Add",
+    "short_name": "Add",
+    "description": "Tambah task cepat",
+
+    "tag": "quick-add",
+
+    "ms_ac_template": "/Personal-Assistant/widgets/template.json",
+    "data": "/Personal-Assistant/widgets/data.json",
+
+    "type": "application/json",
+
+    "screenshots": [
+      {
+        "src": "icons/screenshot1.png",
+        "sizes": "600x400",
+        "label": "Quick Add Widget"
+      }
+    ],
+
+    "icons": [
+      {
+        "src": "icons/icon-192x192.png",
+        "sizes": "192x192"
+      }
+    ]
+  }
+],
 
   "edge_side_panel": {
     "preferred_width": 400
