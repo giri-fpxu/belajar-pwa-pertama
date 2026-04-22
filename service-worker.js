@@ -12,7 +12,7 @@ const PRECACHE_FILES = [
   '/Personal-Assistant/',
   '/Personal-Assistant/index.html',
   '/Personal-Assistant/manifest.json',
-  '/Personal-Assistant/offline.html', // ← INI LU MASUKIN
+  '/Personal-Assistant/offline.html',
   '/Personal-Assistant/icons/icon-192x192.png',
   '/Personal-Assistant/icons/icon-512x512.png',
 ];
@@ -72,28 +72,23 @@ self.addEventListener('fetch', event => {
   const skipList = ['google-analytics.com', 'analytics', 'firebase', 'hotjar'];
   if (skipList.some(p => url.href.includes(p))) return;
 
-  /* ── NAVIGATION REQUEST (buka halaman) ──
-     Strategi: Network-first, fallback ke index.html
-     Supaya selalu dapat versi terbaru, tapi tetap
-     bisa buka app waktu offline */
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then(res => {
-          if (res && res.status === 200) {
-            const clone = res.clone();
-            caches.open(CACHE_NAME).then(c => c.put(req, clone));
-          }
-          return res;
-        })
-        .catch(() =>
-          caches.match(req).then(res =>
-            res || caches.match('/Personal-Assistant/index.html')
-  )
-        )
-    );
-    return;
-  }
+ /* ── NAVIGATION REQUEST (buka halaman) ── */
+if (req.mode === 'navigate') {
+  event.respondWith(
+    fetch(req)
+      .then(res => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, clone));
+        }
+        return res;
+      })
+      .catch(() =>
+        caches.match('/Personal-Assistant/offline.html')
+      )
+  );
+  return;
+}
 
   /* ── ASSET LOKAL (JS, CSS, gambar, icon) ──
      Strategi: Cache-first, update cache di background */
@@ -187,10 +182,8 @@ self.addEventListener('periodicsync', function(event) {
   if (event.tag === 'update-data') {
     console.log('[SW] Periodic sync jalan');
   }
-});
 
-/* 🔥 WIDGET HANDLER (HARUS DI LUAR) */
-self.addEventListener("widgetinstall", event => {
+  self.addEventListener("widgetinstall", event => {
   event.waitUntil(renderWidget(event.widget));
 });
 
@@ -201,5 +194,7 @@ async function renderWidget(widget) {
   await self.widgets.updateByTag(widget.definition.tag, {
     template,
     data
+    
   });
 }
+});
