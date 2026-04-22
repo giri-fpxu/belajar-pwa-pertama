@@ -202,3 +202,12 @@ self.addEventListener("widgetinstall", event => {
   event.waitUntil(renderWidget(event.widget));
 });
 
+async function renderWidget(widget) {
+  const template = await (await fetch(widget.definition.ms_ac_template)).text();
+  const data = await (await fetch(widget.definition.data)).text();
+
+  await self.widgets.updateByTag(widget.definition.tag, {
+    template,
+    data
+  });
+}
