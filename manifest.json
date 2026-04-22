@@ -162,24 +162,20 @@
       "short_name": "Add",
       "description": "Tambah task cepat",
       "tag": "quick-add",
-      "type": "application/json",
-      "display": "standalone",
-      "multiple_instance": true,
-      "ms_ac_template": "/Personal-Assistant/widgets/template.json",
-      "data": "/Personal-Assistant/widgets/data.json",
+      "url": "/Personal-Assistant/",
+      "icons": [
+        {
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
       "screenshots": [
         {
           "src": "icons/screenshot1.png",
           "sizes": "600x400",
           "type": "image/png",
           "label": "Quick Add Widget"
-        }
-      ],
-      "icons": [
-        {
-          "src": "icons/icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
         }
       ]
     }
@@ -192,10 +188,6 @@
   "scope_extensions": [
     {
       "origin": "https://giri-fpxu.github.io"
-    },
-    {
-      "origin": "https://giri-fpxu.github.io",
-      "scope": "/Personal-Assistant/"
     }
   ],
 

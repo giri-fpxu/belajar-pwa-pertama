@@ -17,7 +17,7 @@ const PRECACHE_FILES = [
   '/Personal-Assistant/icons/icon-512x512.png',
 ];
 
-/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════s
    INSTALL — pre-cache file lokal
    Pakai Promise.allSettled supaya satu file gagal
    tidak membatalkan seluruh install
