@@ -161,7 +161,8 @@
     "tag": "quick-add",
 
     "type": "application/json",
-
+    "display": "standalone",
+    "multiple_instance": true,
     "ms_ac_template": "/Personal-Assistant/widgets/template.json",
     "data": "/Personal-Assistant/widgets/data.json",
 
