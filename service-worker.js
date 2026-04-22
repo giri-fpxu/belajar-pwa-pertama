@@ -187,8 +187,10 @@ self.addEventListener('periodicsync', function(event) {
   if (event.tag === 'update-data') {
     console.log('[SW] Periodic sync jalan');
   }
+});
 
-  self.addEventListener("widgetinstall", event => {
+/* 🔥 WIDGET HANDLER (HARUS DI LUAR) */
+self.addEventListener("widgetinstall", event => {
   event.waitUntil(renderWidget(event.widget));
 });
 
@@ -201,4 +203,3 @@ async function renderWidget(widget) {
     data
   });
 }
-});
