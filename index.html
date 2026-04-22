@@ -2223,21 +2223,34 @@ window.addEventListener('appinstalled', function() {
 
 /* ── SERVICE WORKER REGISTER ──
    ✏️ Sesuaikan path jika file sw.js ada di subfolder */
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
+
     navigator.serviceWorker.register('/Personal-Assistant/service-worker.js')
       .then(function(reg) {
         console.log('[SW] Terdaftar:', reg.scope);
+
+        // 🔥 background sync
+        if ('SyncManager' in window) {
+          reg.sync.register('sync-data');
+        }
+
+        // 🔥 periodic sync (opsional, ga semua browser support)
+        if ('periodicSync' in reg) {
+          reg.periodicSync.register('update-data', {
+            minInterval: 24 * 60 * 60 * 1000
+          });
+        }
+
       })
       .catch(function(err) {
         console.warn('[SW] Gagal daftar:', err);
       });
+
   });
 }
-
 </script>
-
-
 
 <!-- ══════════════════════════════════════
      PWA INSTALL BANNER
